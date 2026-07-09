@@ -6,7 +6,7 @@ in the backlog is built.
 
 ## Epic 1 — Instant Plateau Detection (the wow moment)
 
-- [ ] **Paste-to-insight: instant plateau classification (the wow moment)**
+- [x] **Paste-to-insight: instant plateau classification (the wow moment)**
   - Pasting a squat log whose last 5 weeks of estimated-1RM are flat (within noise) labels
     squat "stalled for 5 weeks" in the results view.
   - Pasting a log with a clearly increasing trend across the window labels that lift "trending
@@ -14,13 +14,13 @@ in the backlog is built.
   - The result renders in the same page load with no server round-trip (the Network tab shows
     no request after the initial page/Pyodide load).
 
-- [ ] **Rolling-window linear regression over estimated-1RM history**
+- [x] **Rolling-window linear regression over estimated-1RM history**
   - Given ≥6 sessions for one exercise, the regression is computed over a trailing window
     (default: last 6 sessions) and refit as new sessions are added.
   - Unit test: synthetic perfectly-flat data returns a slope of ~0.
   - Unit test: synthetic monotonically-increasing data returns a positive slope.
 
-- [ ] **Noise-aware significance threshold on the regression slope**
+- [x] **Noise-aware significance threshold on the regression slope**
   - A lift is classified "plateaued" only when the slope's confidence interval (e.g. 90%)
     includes zero over the window; otherwise "trending up" or "trending down".
   - Unit test: synthetic data with high session-to-session noise but no real trend is
@@ -28,7 +28,7 @@ in the backlog is built.
   - The weeks-stalled count reflects how many consecutive trailing sessions fall inside a flat
     regression window.
 
-- [ ] **Multi-exercise classification in one pass**
+- [x] **Multi-exercise classification in one pass**
   - Pasting a log containing squat, bench, and deadlift entries classifies each independently
     and lists all three in the results.
   - An exercise with too few sessions to fit a window (<4) is labeled "insufficient data"
