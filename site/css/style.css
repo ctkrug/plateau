@@ -297,7 +297,8 @@ th {
   letter-spacing: 0.06em;
 }
 
-.results-panel {
+.results-panel,
+.table-panel {
   grid-column: 1 / -1;
 }
 
