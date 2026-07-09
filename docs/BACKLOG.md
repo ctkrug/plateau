@@ -57,7 +57,7 @@ in the backlog is built.
   - A visible button loads a realistic multi-exercise sample log and immediately runs analysis.
   - Works before the user has pasted anything (the first-visit empty state offers it).
 
-- [ ] **Persist last-pasted log in localStorage**
+- [x] **Persist last-pasted log in localStorage**
   - Reloading the page restores the previously pasted log and its classification without
     re-pasting.
   - Replacing the textarea contents and re-analyzing overwrites the stored value.
