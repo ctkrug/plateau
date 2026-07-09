@@ -62,7 +62,7 @@ in the backlog is built.
     re-pasting.
   - Replacing the textarea contents and re-analyzing overwrites the stored value.
 
-- [ ] **Graceful handling of sparse/irregular logging**
+- [x] **Graceful handling of sparse/irregular logging**
   - A log with missed weeks (gaps >14 days between sessions for one exercise) still classifies
     without crashing, and the weeks-stalled count accounts for calendar time, not just session
     count.
