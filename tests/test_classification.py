@@ -93,3 +93,29 @@ def test_classify_log_flags_sparse_exercise_as_insufficient():
 
 def test_classify_log_empty_input_returns_empty_list():
     assert classify_log([]) == []
+
+
+def test_gap_containing_log_classifies_without_crashing():
+    # Two sessions a week apart, then an 8-week gap, then two more sessions.
+    entries = [
+        Entry(date=date(2026, 1, 5), exercise="squat", weight=225, reps=5),
+        Entry(date=date(2026, 1, 12), exercise="squat", weight=226, reps=5),
+        Entry(date=date(2026, 3, 9), exercise="squat", weight=224, reps=5),
+        Entry(date=date(2026, 3, 16), exercise="squat", weight=225, reps=5),
+    ]
+    result = classify_exercise(entries)
+    assert result.trend != Trend.INSUFFICIENT_DATA
+    assert result.sessions_used == 4
+
+
+def test_weeks_stalled_reflects_calendar_span_not_session_count():
+    # Same number of sessions (4), but spread over very different calendar spans.
+    tight = _sessions("squat", [225, 224, 226, 225], step_days=7)
+    sparse = _sessions("squat", [225, 224, 226, 225], step_days=21)
+
+    tight_result = classify_exercise(tight)
+    sparse_result = classify_exercise(sparse)
+
+    assert tight_result.trend == Trend.STALLED
+    assert sparse_result.trend == Trend.STALLED
+    assert sparse_result.weeks_stalled > tight_result.weeks_stalled
