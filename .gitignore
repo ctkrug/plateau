@@ -24,3 +24,6 @@ htmlcov/
 
 # Node (site tooling, if ever added)
 node_modules/
+
+# Generated site build output
+site/vendor/
