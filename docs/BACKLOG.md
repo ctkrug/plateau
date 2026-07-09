@@ -79,7 +79,7 @@ in the backlog is built.
   - Status updates announce via the existing `aria-live` region; text contrast ≥4.5:1 verified
     against `docs/DESIGN.md` tokens.
 
-- [ ] **Ship gate: design + QA sign-off**
+- [x] **Ship gate: design + QA sign-off**
   - Page matches `docs/DESIGN.md` direction and tokens (favicon present, wordmark styled, no
     anti-generic bans present).
   - CI green on `main`; all other backlog stories checked off or explicitly deferred with a
