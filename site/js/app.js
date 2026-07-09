@@ -14,10 +14,18 @@ const SAMPLE_LOG = `date,exercise,weight,reps
 
 const EXERCISE_COLORS = ["#5ee7ff", "#ffb347", "#6ee7b7", "#ff6b6b"];
 
+const TREND_LABELS = {
+  stalled: (c) => `Stalled ${c.weeks_stalled}wk`,
+  trending_up: () => "Trending up",
+  trending_down: () => "Trending down",
+  insufficient_data: () => "Insufficient data",
+};
+
 const logInput = document.getElementById("log-input");
 const analyzeBtn = document.getElementById("analyze-btn");
 const statusLine = document.getElementById("status-line");
 const tableWrap = document.getElementById("table-wrap");
+const statusStrip = document.getElementById("status-strip");
 const chart = document.getElementById("chart");
 
 logInput.value = SAMPLE_LOG;
@@ -64,6 +72,25 @@ function renderTable(rows, errors) {
     </table>
     ${errorList}
   `;
+}
+
+function renderBadges(classifications) {
+  if (classifications.length === 0) {
+    statusStrip.innerHTML = '<p class="empty-state">No classifications yet — paste a log above.</p>';
+    return;
+  }
+
+  statusStrip.innerHTML = classifications
+    .map((c) => {
+      const cssClass = c.trend.replace(/_/g, "-");
+      const label = TREND_LABELS[c.trend](c);
+      return `
+        <button class="badge-btn" type="button" data-exercise="${c.exercise}" aria-pressed="false">
+          <span class="exercise-name">${c.exercise}</span>
+          <span class="badge ${cssClass}">${label}</span>
+        </button>`;
+    })
+    .join("");
 }
 
 function drawChart(rows) {
@@ -129,9 +156,10 @@ async function runAnalysis(pyodide) {
 
   const result = pyodide.runPython(`
 from plateau.parsing import parse_log
-from plateau.analysis import estimate_one_rep_max
+from plateau.analysis import classify_log, estimate_one_rep_max
 
 _result = parse_log(log_text)
+_classifications = classify_log(_result.entries)
 {
     "rows": [
         {
@@ -144,6 +172,18 @@ _result = parse_log(log_text)
         for e in _result.entries
     ],
     "errors": _result.errors,
+    "classifications": [
+        {
+            "exercise": c.exercise,
+            "trend": c.trend.value,
+            "weeks_stalled": c.weeks_stalled,
+            "slope": c.slope,
+            "slope_ci_low": c.slope_ci_low,
+            "slope_ci_high": c.slope_ci_high,
+            "sessions_used": c.sessions_used,
+        }
+        for c in _classifications
+    ],
 }
 `);
 
@@ -151,6 +191,7 @@ _result = parse_log(log_text)
   result.destroy();
 
   renderTable(data.rows, data.errors);
+  renderBadges(data.classifications);
   drawChart(data.rows);
 
   setStatus(`Parsed ${data.rows.length} session(s), ${data.errors.length} error(s).`, "ready");
