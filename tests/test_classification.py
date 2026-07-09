@@ -108,6 +108,17 @@ def test_gap_containing_log_classifies_without_crashing():
     assert result.sessions_used == 4
 
 
+def test_identical_weights_are_stalled_at_the_exact_zero_boundary():
+    # Zero variance in y collapses the slope's confidence interval to exactly
+    # [0, 0], so the "does the interval include zero" check must use an
+    # inclusive comparison at both ends, not a strict one.
+    entries = _sessions("squat", [225, 225, 225, 225, 225, 225])
+    result = classify_exercise(entries)
+    assert result.slope_ci_low == 0
+    assert result.slope_ci_high == 0
+    assert result.trend == Trend.STALLED
+
+
 def test_weeks_stalled_reflects_calendar_span_not_session_count():
     # Same number of sessions (4), but spread over very different calendar spans.
     tight = _sessions("squat", [225, 224, 226, 225], step_days=7)
