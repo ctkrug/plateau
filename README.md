@@ -39,7 +39,9 @@ docs/           vision, backlog, and design direction
 
 ## Status
 
-Early scaffold — see [`docs/VISION.md`](docs/VISION.md) for the plan and
+The core is functional end to end: paste (or load the sample) a multi-exercise log and see each
+lift classified stalled / trending up / trending down / insufficient data, with a per-lift
+regression chart and confidence band. See [`docs/VISION.md`](docs/VISION.md) for the plan and
 [`docs/BACKLOG.md`](docs/BACKLOG.md) for what's built vs. planned.
 
 ## Local development
