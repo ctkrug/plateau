@@ -53,7 +53,7 @@ in the backlog is built.
 
 ## Epic 3 — Data Handling & Robustness
 
-- [ ] **"Try it now" demo dataset loader**
+- [x] **"Try it now" demo dataset loader**
   - A visible button loads a realistic multi-exercise sample log and immediately runs analysis.
   - Works before the user has pasted anything (the first-visit empty state offers it).
 
