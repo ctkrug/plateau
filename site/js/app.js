@@ -12,7 +12,10 @@ const SAMPLE_LOG = `date,exercise,weight,reps
 2026-04-29,bench,175,5
 2026-05-06,bench,180,5`;
 
-const EXERCISE_COLORS = ["#5ee7ff", "#ffb347", "#6ee7b7", "#ff6b6b"];
+const ACCENT = "#5ee7ff";
+const TEXT = "#eaf2fb";
+const TEXT_MUTED = "#8fa8c2";
+const ACCENT_BAND = "rgba(94, 231, 255, 0.14)";
 
 const TREND_LABELS = {
   stalled: (c) => `Stalled ${c.weeks_stalled}wk`,
@@ -29,6 +32,9 @@ const statusStrip = document.getElementById("status-strip");
 const chart = document.getElementById("chart");
 
 logInput.value = SAMPLE_LOG;
+
+let lastClassifications = [];
+let activeExercise = null;
 
 function setStatus(message, state) {
   statusLine.textContent = message;
@@ -84,16 +90,25 @@ function renderBadges(classifications) {
     .map((c) => {
       const cssClass = c.trend.replace(/_/g, "-");
       const label = TREND_LABELS[c.trend](c);
+      const pressed = c.exercise === activeExercise;
       return `
-        <button class="badge-btn" type="button" data-exercise="${c.exercise}" aria-pressed="false">
+        <button class="badge-btn" type="button" data-exercise="${c.exercise}" aria-pressed="${pressed}">
           <span class="exercise-name">${c.exercise}</span>
           <span class="badge ${cssClass}">${label}</span>
         </button>`;
     })
     .join("");
+
+  statusStrip.querySelectorAll(".badge-btn").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      activeExercise = btn.dataset.exercise;
+      renderBadges(lastClassifications);
+      drawChart(lastClassifications.find((c) => c.exercise === activeExercise));
+    });
+  });
 }
 
-function drawChart(rows) {
+function drawChart(classification) {
   const dpr = window.devicePixelRatio || 1;
   const rect = chart.getBoundingClientRect();
   chart.width = rect.width * dpr;
@@ -102,52 +117,63 @@ function drawChart(rows) {
   ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
   ctx.clearRect(0, 0, rect.width, rect.height);
 
-  if (rows.length === 0) return;
+  if (!classification || classification.points.length === 0) return;
 
+  const points = classification.points;
   const padding = 32;
-  const dates = rows.map((r) => new Date(r.date).getTime());
-  const values = rows.map((r) => r.estimated_1rm);
+  const dates = points.map((p) => new Date(p.date).getTime());
+  const values = points.map((p) => p.estimated_1rm);
   const minX = Math.min(...dates);
   const maxX = Math.max(...dates);
   const minY = Math.min(...values) * 0.95;
   const maxY = Math.max(...values) * 1.05;
 
   const xScale = (t) =>
-    padding + (maxX === minX ? 0 : ((t - minX) / (maxX - minX)) * (rect.width - padding * 2));
+    padding + (maxX === minX ? (rect.width - padding * 2) / 2 : ((t - minX) / (maxX - minX)) * (rect.width - padding * 2));
   const yScale = (v) =>
     rect.height - padding - ((v - minY) / (maxY - minY || 1)) * (rect.height - padding * 2);
 
-  const exercises = [...new Set(rows.map((r) => r.exercise))];
+  if (classification.slope !== null && classification.sessions_used >= 3) {
+    const windowPoints = points.slice(-classification.sessions_used);
+    const windowDates = windowPoints.map((p) => new Date(p.date).getTime());
+    const windowValues = windowPoints.map((p) => p.estimated_1rm);
+    const meanX = windowDates.reduce((a, b) => a + b, 0) / windowDates.length;
+    const meanY = windowValues.reduce((a, b) => a + b, 0) / windowValues.length;
+    const dayMs = 86400000;
+    const valueAt = (t, slopePerDay) => meanY + slopePerDay * ((t - meanX) / dayMs);
 
-  exercises.forEach((exercise, i) => {
-    const color = EXERCISE_COLORS[i % EXERCISE_COLORS.length];
-    const points = rows
-      .filter((r) => r.exercise === exercise)
-      .sort((a, b) => new Date(a.date) - new Date(b.date));
+    const x0 = windowDates[0];
+    const x1 = windowDates[windowDates.length - 1];
 
-    ctx.strokeStyle = color;
+    ctx.fillStyle = ACCENT_BAND;
+    ctx.beginPath();
+    ctx.moveTo(xScale(x0), yScale(valueAt(x0, classification.slope_ci_low)));
+    ctx.lineTo(xScale(x1), yScale(valueAt(x1, classification.slope_ci_low)));
+    ctx.lineTo(xScale(x1), yScale(valueAt(x1, classification.slope_ci_high)));
+    ctx.lineTo(xScale(x0), yScale(valueAt(x0, classification.slope_ci_high)));
+    ctx.closePath();
+    ctx.fill();
+
+    ctx.strokeStyle = ACCENT;
     ctx.lineWidth = 2;
     ctx.beginPath();
-    points.forEach((p, idx) => {
-      const x = xScale(new Date(p.date).getTime());
-      const y = yScale(p.estimated_1rm);
-      if (idx === 0) ctx.moveTo(x, y);
-      else ctx.lineTo(x, y);
-    });
+    ctx.moveTo(xScale(x0), yScale(valueAt(x0, classification.slope)));
+    ctx.lineTo(xScale(x1), yScale(valueAt(x1, classification.slope)));
     ctx.stroke();
+  }
 
-    ctx.fillStyle = color;
-    points.forEach((p) => {
-      const x = xScale(new Date(p.date).getTime());
-      const y = yScale(p.estimated_1rm);
-      ctx.beginPath();
-      ctx.arc(x, y, 4, 0, Math.PI * 2);
-      ctx.fill();
-    });
-
-    ctx.font = "12px monospace";
-    ctx.fillText(exercise, padding, padding - 12 + i * 14);
+  ctx.fillStyle = TEXT;
+  points.forEach((p) => {
+    const x = xScale(new Date(p.date).getTime());
+    const y = yScale(p.estimated_1rm);
+    ctx.beginPath();
+    ctx.arc(x, y, 4, 0, Math.PI * 2);
+    ctx.fill();
   });
+
+  ctx.font = "12px monospace";
+  ctx.fillStyle = TEXT_MUTED;
+  ctx.fillText(classification.exercise, padding, padding - 12);
 }
 
 async function runAnalysis(pyodide) {
@@ -196,9 +222,14 @@ _classifications = classify_log(_result.entries)
   const data = result.toJs({ dict_converter: Object.fromEntries });
   result.destroy();
 
+  lastClassifications = data.classifications;
+  if (!lastClassifications.some((c) => c.exercise === activeExercise)) {
+    activeExercise = lastClassifications.length > 0 ? lastClassifications[0].exercise : null;
+  }
+
   renderTable(data.rows, data.errors);
-  renderBadges(data.classifications);
-  drawChart(data.rows);
+  renderBadges(lastClassifications);
+  drawChart(lastClassifications.find((c) => c.exercise === activeExercise));
 
   setStatus(`Parsed ${data.rows.length} session(s), ${data.errors.length} error(s).`, "ready");
 }
