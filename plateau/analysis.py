@@ -7,6 +7,8 @@ from collections.abc import Sequence
 from dataclasses import dataclass
 from enum import StrEnum
 
+from plateau.parsing import Entry
+
 # Two-tailed 90% CI critical values for Student's t by degrees of freedom.
 # Beyond 30 dof the normal approximation (1.645) is accurate to 3 decimal places.
 _T90_TABLE = {
@@ -103,3 +105,47 @@ class Classification:
     weeks_stalled: int
     slope: float | None
     sessions_used: int
+
+
+DEFAULT_WINDOW = 6
+MIN_SESSIONS = 4
+
+
+def classify_exercise(entries: Sequence[Entry], window: int = DEFAULT_WINDOW) -> Classification:
+    """Classify one exercise's recent trend from its session history.
+
+    Fits a rolling window of the trailing ``window`` sessions (or all of them,
+    if fewer) and asks whether the slope's 90% confidence interval includes
+    zero: if so the lift is statistically indistinguishable from flat over
+    that window, i.e. plateaued. Fewer than MIN_SESSIONS sessions can't
+    support a confidence interval at all, so those are reported separately
+    rather than guessed at.
+    """
+    ordered = sorted(entries, key=lambda e: e.date)
+    if len(ordered) < MIN_SESSIONS:
+        exercise = ordered[0].exercise if ordered else ""
+        return Classification(exercise, Trend.INSUFFICIENT_DATA, 0, None, len(ordered))
+
+    exercise = ordered[0].exercise
+    recent = ordered[-window:] if len(ordered) > window else ordered
+
+    first_date = recent[0].date
+    x = [(e.date - first_date).days for e in recent]
+    y = [estimate_one_rep_max(e.weight, e.reps) for e in recent]
+    fit = fit_trend(x, y)
+
+    if fit.slope_ci_low <= 0 <= fit.slope_ci_high:
+        span_days = (recent[-1].date - recent[0].date).days
+        weeks_stalled = max(1, round(span_days / 7))
+        return Classification(exercise, Trend.STALLED, weeks_stalled, fit.slope, len(recent))
+
+    trend = Trend.TRENDING_UP if fit.slope > 0 else Trend.TRENDING_DOWN
+    return Classification(exercise, trend, 0, fit.slope, len(recent))
+
+
+def classify_log(entries: Sequence[Entry], window: int = DEFAULT_WINDOW) -> list[Classification]:
+    """Classify every exercise present in a parsed log, independently."""
+    by_exercise: dict[str, list[Entry]] = {}
+    for entry in entries:
+        by_exercise.setdefault(entry.exercise, []).append(entry)
+    return [classify_exercise(sessions, window=window) for sessions in by_exercise.values()]
