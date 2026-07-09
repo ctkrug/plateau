@@ -181,6 +181,12 @@ _classifications = classify_log(_result.entries)
             "slope_ci_low": c.slope_ci_low,
             "slope_ci_high": c.slope_ci_high,
             "sessions_used": c.sessions_used,
+            "points": [
+                {"date": str(e.date), "estimated_1rm": round(estimate_one_rep_max(e.weight, e.reps), 1)}
+                for e in sorted(
+                    (e for e in _result.entries if e.exercise == c.exercise), key=lambda e: e.date
+                )
+            ],
         }
         for c in _classifications
     ],
