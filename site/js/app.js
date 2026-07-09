@@ -10,7 +10,13 @@ const SAMPLE_LOG = `date,exercise,weight,reps
 2026-04-15,bench,165,5
 2026-04-22,bench,170,5
 2026-04-29,bench,175,5
-2026-05-06,bench,180,5`;
+2026-05-06,bench,180,5
+2026-04-01,deadlift,315,5
+2026-04-08,deadlift,305,5
+2026-04-15,deadlift,300,5
+2026-04-22,deadlift,290,5
+2026-04-29,deadlift,285,5
+2026-05-06,deadlift,275,5`;
 
 const ACCENT = "#5ee7ff";
 const TEXT = "#eaf2fb";
@@ -26,12 +32,11 @@ const TREND_LABELS = {
 
 const logInput = document.getElementById("log-input");
 const analyzeBtn = document.getElementById("analyze-btn");
+const demoBtn = document.getElementById("demo-btn");
 const statusLine = document.getElementById("status-line");
 const tableWrap = document.getElementById("table-wrap");
 const statusStrip = document.getElementById("status-strip");
 const chart = document.getElementById("chart");
-
-logInput.value = SAMPLE_LOG;
 
 let lastClassifications = [];
 let activeExercise = null;
@@ -47,7 +52,8 @@ function setStatus(message, state) {
 
 function renderTable(rows, errors) {
   if (rows.length === 0) {
-    tableWrap.innerHTML = '<p class="empty-state">No valid rows parsed yet — paste a log above.</p>';
+    tableWrap.innerHTML =
+      '<p class="empty-state">No valid rows parsed yet — paste a log above, or click "Try it now".</p>';
     return;
   }
 
@@ -82,7 +88,8 @@ function renderTable(rows, errors) {
 
 function renderBadges(classifications) {
   if (classifications.length === 0) {
-    statusStrip.innerHTML = '<p class="empty-state">No classifications yet — paste a log above.</p>';
+    statusStrip.innerHTML =
+      '<p class="empty-state">No classifications yet — paste a log above, or click "Try it now".</p>';
     return;
   }
 
@@ -238,9 +245,10 @@ async function boot() {
   setStatus("Booting Python runtime (Pyodide)…");
   try {
     const pyodide = await loadPlateauPackage();
-    setStatus("Ready.", "ready");
+    setStatus("Ready — paste a log or try the sample data.", "ready");
     analyzeBtn.disabled = false;
     analyzeBtn.textContent = "Analyze";
+    demoBtn.disabled = false;
 
     analyzeBtn.addEventListener("click", () => {
       analyzeBtn.disabled = true;
@@ -252,11 +260,16 @@ async function boot() {
         });
     });
 
-    // Run once immediately so the page isn't empty on load.
-    analyzeBtn.click();
+    demoBtn.addEventListener("click", () => {
+      logInput.value = SAMPLE_LOG;
+      analyzeBtn.click();
+    });
   } catch (err) {
     setStatus(`Failed to load Python runtime: ${err.message}`, "error");
   }
 }
 
+renderTable([], []);
+renderBadges([]);
+drawChart(null);
 boot();
