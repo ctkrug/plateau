@@ -3,10 +3,15 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Plateau — find out what actually stalled</title>
+  <title>Plateau — See which lifts have actually stalled</title>
   <meta
     name="description"
-    content="Paste your logged lift numbers and Plateau statistically detects real plateaus via rolling regression, running entirely in your browser."
+    content="Paste your logged lift numbers and Plateau runs a rolling-regression significance test to show which lifts have actually stalled, and for how long. Runs entirely in your browser."
+  />
+  <meta property="og:title" content="Plateau — See which lifts have actually stalled" />
+  <meta
+    property="og:description"
+    content="A statistical plateau detector for lifters: paste your log, get a rolling-regression call on every lift. No account, runs in your browser."
   />
   <link
     rel="icon"
@@ -26,8 +31,11 @@
       </svg>
     </h1>
     <p class="tagline">
-      Paste your logged lift numbers — date, exercise, weight, reps — and see which lifts have
-      <em>actually</em> stalled, via rolling-regression slope, not vibes.
+      Paste your logged lift numbers (date, exercise, weight, reps) and see which lifts have
+      <em>actually</em> stalled, from a rolling-regression slope, not vibes.
+    </p>
+    <p class="hero-links">
+      <a href="https://github.com/ctkrug/plateau" rel="noopener">View on GitHub</a>
     </p>
   </header>
 
@@ -63,8 +71,62 @@
     </section>
   </main>
 
+  <section class="prose" aria-labelledby="about-heading">
+    <h2 id="about-heading">What Plateau does</h2>
+    <p>
+      Plateau is a plateau detector for people who lift and log their training. You paste the
+      numbers you already keep in a spreadsheet or notes app (date, exercise, weight, reps) and it
+      tells you which lifts have genuinely stalled and which are still moving. The point is to
+      replace a guess with a test. Comparing this week's top set to last week's is a single noisy
+      sample: sleep, stress, bar speed, and rep quality push your estimated one-rep max around
+      enough that one comparison produces both false alarms and false comfort.
+    </p>
+    <p>
+      Instead, Plateau converts each session to an estimated one-rep max (Epley formula), fits a
+      rolling linear regression over each exercise's recent history, and checks whether the slope
+      is statistically distinguishable from zero at 90% confidence. If zero sits inside that
+      confidence interval, the lift is flat within its own noise and gets flagged as plateaued,
+      with a count of how many weeks the flat window spans. If the interval clears zero, the lift
+      is trending up or down. Lifts with fewer than four logged sessions are marked insufficient
+      data rather than guessed at.
+    </p>
+
+    <h2>How to use it</h2>
+    <ol>
+      <li>Copy your log as one session per line: <code>date, exercise, weight, reps</code>. Commas
+        or tabs both work, and a header row is fine.</li>
+      <li>Paste it into the box and press Analyze, or click "Try it now" to load a sample.</li>
+      <li>Read the badges: each exercise is labeled stalled, trending up, trending down, or
+        insufficient data. Click a badge to focus the chart on that lift and see the scatter, the
+        fitted trend line, and its confidence band.</li>
+    </ol>
+
+    <h2>FAQ</h2>
+    <dl>
+      <dt>What log format do I need?</dt>
+      <dd>Four fields per line: date, exercise name, weight, and reps. Dates can be
+        <code>YYYY-MM-DD</code> or <code>MM/DD/YYYY</code>. Rows that don't parse are skipped and
+        reported, so a couple of typos won't block the rest of your log.</dd>
+
+      <dt>How many sessions before it can call a plateau?</dt>
+      <dd>At least four sessions for one exercise. The regression uses a trailing window of up to
+        six sessions, so more history gives a tighter confidence interval and a more confident
+        call.</dd>
+
+      <dt>Does my training data get uploaded anywhere?</dt>
+      <dd>No. The whole analysis runs in your browser through Pyodide. Nothing you paste is sent to
+        a server, and the only thing stored is your last log in this browser's local storage so the
+        page can restore it on reload.</dd>
+
+      <dt>Why estimated one-rep max instead of the raw weight?</dt>
+      <dd>It puts sets of different rep counts on one scale, so a triple at 300 and a set of five at
+        275 are comparable points on the same trend line rather than two numbers you can't line up.</dd>
+    </dl>
+  </section>
+
   <footer>
-    Runs entirely in your browser via Pyodide — nothing you paste ever leaves this page.
+    <p>Runs entirely in your browser via Pyodide. Nothing you paste ever leaves this page.</p>
+    <p><a href="https://apps.charliekrug.com" rel="noopener">More by Charlie Krug → apps.charliekrug.com</a></p>
   </footer>
 
   <script src="https://cdn.jsdelivr.net/pyodide/v0.26.4/full/pyodide.js"></script>

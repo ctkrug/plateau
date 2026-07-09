@@ -120,6 +120,35 @@ header.hero {
   margin: var(--space-2) auto 0;
 }
 
+.hero-links {
+  margin: var(--space-2) 0 0;
+}
+
+.hero-links a {
+  display: inline-block;
+  font-family: var(--font-display);
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  text-decoration: none;
+  color: var(--accent);
+  border: var(--edge);
+  border-radius: var(--radius);
+  padding: var(--space-1) var(--space-2);
+  transition: box-shadow var(--motion-ui), border-color var(--motion-ui);
+}
+
+.hero-links a:hover {
+  border-color: var(--accent);
+  box-shadow: var(--glow);
+}
+
+.hero-links a:focus-visible {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: var(--glow);
+}
+
 main {
   display: grid;
   grid-template-columns: 360px 1fr;
@@ -380,9 +409,76 @@ th {
   box-shadow: var(--glow);
 }
 
+.prose {
+  max-width: 70ch;
+  margin: 0 auto;
+  padding: var(--space-4);
+  color: var(--text);
+}
+
+.prose h2 {
+  font-family: var(--font-display);
+  font-size: 1rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--accent);
+  margin: var(--space-4) 0 var(--space-2);
+}
+
+.prose p,
+.prose li,
+.prose dd {
+  color: var(--text-muted);
+  font-size: 0.95rem;
+}
+
+.prose ol {
+  padding-left: var(--space-3);
+}
+
+.prose li {
+  margin-bottom: var(--space-1);
+}
+
+.prose code {
+  font-family: var(--font-display);
+  font-size: 0.85em;
+  background: var(--surface-2);
+  border: 1px solid rgba(94, 231, 255, 0.25);
+  border-radius: var(--radius);
+  padding: 1px 5px;
+  color: var(--text);
+}
+
+.prose dt {
+  font-family: var(--font-display);
+  font-size: 0.9rem;
+  color: var(--text);
+  margin-top: var(--space-3);
+}
+
+.prose dd {
+  margin: var(--space-1) 0 0;
+}
+
 footer {
   text-align: center;
   color: var(--text-muted);
   font-size: 0.8rem;
   padding: var(--space-4);
+  border-top: 1px solid rgba(94, 231, 255, 0.15);
+}
+
+footer p {
+  margin: var(--space-1) 0;
+}
+
+footer a {
+  color: var(--text-muted);
+  text-decoration: none;
+  transition: color var(--motion-ui);
+}
+
+footer a:hover {
+  color: var(--accent);
 }
