@@ -70,11 +70,11 @@ in the backlog is built.
 
 ## Epic 4 — Polish, Accessibility & Ship
 
-- [ ] **Full responsive pass**
+- [x] **Full responsive pass**
   - No horizontal scroll or overlapping elements at 390px, 768px, and 1440px.
   - Chart and paste panel both remain usable (no dead empty margins) at all three widths.
 
-- [ ] **Accessibility pass**
+- [x] **Accessibility pass**
   - Full keyboard-only flow: paste, tab to Analyze, tab through badges, no keyboard trap.
   - Status updates announce via the existing `aria-live` region; text contrast ≥4.5:1 verified
     against `docs/DESIGN.md` tokens.
