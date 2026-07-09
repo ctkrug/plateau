@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Plateau — find out what actually stalled</title>
+  <meta
+    name="description"
+    content="Paste your logged lift numbers and Plateau statistically detects real plateaus via rolling regression, running entirely in your browser."
+  />
+  <link
+    rel="icon"
+    href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%230b1f33'/%3E%3Cpath d='M4 22 L11 22 L15 10 L19 26 L23 16 L28 16' fill='none' stroke='%235ee7ff' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E"
+    type="image/svg+xml"
+  />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <header class="hero">
+    <h1 class="wordmark">
+      PLATEAU
+      <svg viewBox="0 0 400 24" preserveAspectRatio="none" aria-hidden="true">
+        <path d="M0 18 L60 18 L90 6 L130 22 L170 4 L210 20 L250 10 L290 20 L330 8 L400 16" />
+      </svg>
+    </h1>
+    <p class="tagline">
+      Paste your logged lift numbers — date, exercise, weight, reps — and see which lifts have
+      <em>actually</em> stalled, via rolling-regression slope, not vibes.
+    </p>
+  </header>
+
+  <main id="main">
+    <section class="panel" aria-labelledby="input-heading">
+      <h2 id="input-heading">Training log</h2>
+      <label for="log-input">Paste CSV or TSV: date, exercise, weight, reps</label>
+      <textarea id="log-input" spellcheck="false"></textarea>
+      <button id="analyze-btn" type="button" disabled>Booting…</button>
+      <p id="status-line" class="status-line" role="status" aria-live="polite"></p>
+    </section>
+
+    <section class="panel chart-panel" aria-labelledby="chart-heading">
+      <h2 id="chart-heading">Estimated 1RM by session</h2>
+      <canvas id="chart" role="img" aria-label="Scatter plot of estimated one-rep max per logged session"></canvas>
+      <div id="table-wrap"></div>
+    </section>
+  </main>
+
+  <footer>
+    Runs entirely in your browser via Pyodide — nothing you paste ever leaves this page.
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/pyodide/v0.26.4/full/pyodide.js"></script>
+  <script src="js/pyodide-loader.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
