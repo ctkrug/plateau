@@ -104,6 +104,8 @@ class Classification:
     trend: Trend
     weeks_stalled: int
     slope: float | None
+    slope_ci_low: float | None
+    slope_ci_high: float | None
     sessions_used: int
 
 
@@ -124,7 +126,7 @@ def classify_exercise(entries: Sequence[Entry], window: int = DEFAULT_WINDOW) ->
     ordered = sorted(entries, key=lambda e: e.date)
     if len(ordered) < MIN_SESSIONS:
         exercise = ordered[0].exercise if ordered else ""
-        return Classification(exercise, Trend.INSUFFICIENT_DATA, 0, None, len(ordered))
+        return Classification(exercise, Trend.INSUFFICIENT_DATA, 0, None, None, None, len(ordered))
 
     exercise = ordered[0].exercise
     recent = ordered[-window:] if len(ordered) > window else ordered
@@ -137,10 +139,20 @@ def classify_exercise(entries: Sequence[Entry], window: int = DEFAULT_WINDOW) ->
     if fit.slope_ci_low <= 0 <= fit.slope_ci_high:
         span_days = (recent[-1].date - recent[0].date).days
         weeks_stalled = max(1, round(span_days / 7))
-        return Classification(exercise, Trend.STALLED, weeks_stalled, fit.slope, len(recent))
+        return Classification(
+            exercise,
+            Trend.STALLED,
+            weeks_stalled,
+            fit.slope,
+            fit.slope_ci_low,
+            fit.slope_ci_high,
+            len(recent),
+        )
 
     trend = Trend.TRENDING_UP if fit.slope > 0 else Trend.TRENDING_DOWN
-    return Classification(exercise, trend, 0, fit.slope, len(recent))
+    return Classification(
+        exercise, trend, 0, fit.slope, fit.slope_ci_low, fit.slope_ci_high, len(recent)
+    )
 
 
 def classify_log(entries: Sequence[Entry], window: int = DEFAULT_WINDOW) -> list[Classification]:

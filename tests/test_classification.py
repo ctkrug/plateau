@@ -18,10 +18,17 @@ def test_flat_weights_classified_stalled_with_weeks_count():
     assert result.weeks_stalled == 5
 
 
+def test_stalled_classification_exposes_slope_confidence_interval():
+    entries = _sessions("squat", [225, 224, 226, 225, 224, 225])
+    result = classify_exercise(entries)
+    assert result.slope_ci_low <= 0 <= result.slope_ci_high
+
+
 def test_clear_increase_classified_trending_up():
     entries = _sessions("bench", [155, 160, 165, 170, 175, 180])
     result = classify_exercise(entries)
     assert result.trend == Trend.TRENDING_UP
+    assert result.slope_ci_low > 0
 
 
 def test_clear_decrease_classified_trending_down():
@@ -35,6 +42,8 @@ def test_fewer_than_four_sessions_is_insufficient_data():
     result = classify_exercise(entries)
     assert result.trend == Trend.INSUFFICIENT_DATA
     assert result.slope is None
+    assert result.slope_ci_low is None
+    assert result.slope_ci_high is None
 
 
 def test_exactly_four_sessions_attempts_a_classification():
