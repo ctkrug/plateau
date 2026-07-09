@@ -135,6 +135,7 @@ main {
 }
 
 .panel {
+  min-width: 0;
   background: var(--surface-1);
   border: var(--edge);
   border-radius: var(--radius);
@@ -248,6 +249,10 @@ button:disabled {
   font-size: 0.9rem;
   text-align: center;
   padding: var(--space-6) var(--space-2);
+}
+
+#table-wrap {
+  overflow-x: auto;
 }
 
 table {
