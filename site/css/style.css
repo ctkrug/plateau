@@ -230,17 +230,17 @@ button:disabled {
   min-height: 60vh;
   display: flex;
   flex-direction: column;
+  background:
+    linear-gradient(rgba(94, 231, 255, 0.08) 1px, transparent 1px) 0 0 / 24px 24px,
+    linear-gradient(90deg, rgba(94, 231, 255, 0.08) 1px, transparent 1px) 0 0 / 24px 24px,
+    var(--surface-2);
 }
 
 #chart {
   flex: 1;
   width: 100%;
   min-height: 400px;
-  background:
-    linear-gradient(rgba(94, 231, 255, 0.08) 1px, transparent 1px) 0 0 / 24px 24px,
-    linear-gradient(90deg, rgba(94, 231, 255, 0.08) 1px, transparent 1px) 0 0 / 24px 24px,
-    var(--surface-2);
-  border-radius: var(--radius);
+  display: block;
 }
 
 .empty-state {
