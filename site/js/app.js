@@ -129,6 +129,9 @@ function renderBadges(classifications) {
       activeExercise = btn.dataset.exercise;
       renderBadges(lastClassifications);
       drawChart(lastClassifications.find((c) => c.exercise === activeExercise));
+      // renderBadges rebuilds innerHTML, which drops keyboard focus to <body> —
+      // restore it to the newly rendered badge for the same exercise.
+      statusStrip.querySelector(`.badge-btn[data-exercise="${CSS.escape(activeExercise)}"]`)?.focus();
     });
   });
 }
