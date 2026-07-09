@@ -178,6 +178,10 @@ textarea:focus-visible {
   box-shadow: var(--glow);
 }
 
+textarea::placeholder {
+  color: var(--text-muted);
+}
+
 button {
   font-family: var(--font-display);
   font-size: 0.9rem;
@@ -210,6 +214,22 @@ button:active {
 button:disabled {
   opacity: 0.5;
   cursor: progress;
+}
+
+.button-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+button.secondary {
+  background: transparent;
+  color: var(--accent);
+  border: var(--edge);
+}
+
+button.secondary:hover {
+  border-color: var(--accent);
 }
 
 .status-line {

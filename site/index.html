@@ -35,8 +35,11 @@
     <section class="panel" aria-labelledby="input-heading">
       <h2 id="input-heading">Training log</h2>
       <label for="log-input">Paste CSV or TSV: date, exercise, weight, reps</label>
-      <textarea id="log-input" spellcheck="false"></textarea>
-      <button id="analyze-btn" type="button" disabled>Booting…</button>
+      <textarea id="log-input" spellcheck="false" placeholder="2026-01-05, squat, 225, 5"></textarea>
+      <div class="button-row">
+        <button id="analyze-btn" type="button" disabled>Booting…</button>
+        <button id="demo-btn" class="secondary" type="button" disabled>Try it now</button>
+      </div>
       <p id="status-line" class="status-line" role="status" aria-live="polite"></p>
     </section>
 
