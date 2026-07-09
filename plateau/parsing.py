@@ -52,7 +52,9 @@ def parse_log(text: str) -> ParseResult:
 
         fields = [f.strip() for f in (line.split("\t") if "\t" in line else line.split(","))]
         if len(fields) != 4:
-            errors.append(f"line {line_no}: expected 4 fields (date, exercise, weight, reps), got {len(fields)}")
+            errors.append(
+                f"line {line_no}: expected 4 fields (date, exercise, weight, reps), got {len(fields)}"
+            )
             continue
 
         raw_date, exercise, raw_weight, raw_reps = fields
