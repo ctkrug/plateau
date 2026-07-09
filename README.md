@@ -1,5 +1,7 @@
 # Plateau
 
+[![CI](https://github.com/ctkrug/plateau/actions/workflows/ci.yml/badge.svg)](https://github.com/ctkrug/plateau/actions/workflows/ci.yml)
+
 Paste your logged lift numbers — date, exercise, weight, reps — and Plateau tells you which
 lifts have **actually** stalled, and for how long. No app to migrate your log into, no account,
 no server: it runs a real rolling-regression statistical test entirely in your browser.
