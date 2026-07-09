@@ -5,6 +5,7 @@ from __future__ import annotations
 import math
 from collections.abc import Sequence
 from dataclasses import dataclass
+from enum import StrEnum
 
 # Two-tailed 90% CI critical values for Student's t by degrees of freedom.
 # Beyond 30 dof the normal approximation (1.645) is accurate to 3 decimal places.
@@ -84,3 +85,21 @@ def estimate_one_rep_max(weight: float, reps: int) -> float:
     if reps == 1:
         return weight
     return weight * (1 + reps / 30)
+
+
+class Trend(StrEnum):
+    """A per-exercise classification of recent estimated-1RM movement."""
+
+    STALLED = "stalled"
+    TRENDING_UP = "trending_up"
+    TRENDING_DOWN = "trending_down"
+    INSUFFICIENT_DATA = "insufficient_data"
+
+
+@dataclass(frozen=True)
+class Classification:
+    exercise: str
+    trend: Trend
+    weeks_stalled: int
+    slope: float | None
+    sessions_used: int
