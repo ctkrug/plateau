@@ -36,17 +36,17 @@ in the backlog is built.
 
 ## Epic 2 — Visualization & Multi-Lift Dashboard
 
-- [ ] **Per-lift regression chart with confidence band**
+- [x] **Per-lift regression chart with confidence band**
   - Chart draws the estimated-1RM scatter, the fitted regression line, and a shaded confidence
     band for the active exercise.
   - Chart recomputes and redraws on window resize at `devicePixelRatio` for crisp rendering.
 
-- [ ] **Lift status summary strip**
+- [x] **Lift status summary strip**
   - Each classified exercise shows as a labeled badge (stalled Xwk / trending up / trending
     down / insufficient data) beneath the chart.
   - Clicking a badge switches the chart to that exercise.
 
-- [ ] **Design polish: interaction states across all controls**
+- [x] **Design polish: interaction states across all controls**
   - Every control (textarea, button, badge) has themed hover/focus-visible/active states per
     `docs/DESIGN.md` tokens.
   - Squint test and 1440/768/390 resize pass with no unstyled native widgets remaining.
