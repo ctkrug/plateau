@@ -46,3 +46,39 @@ def test_wrong_field_count_is_reported():
 
     assert result.entries == []
     assert "line 1" in result.errors[0]
+
+
+def test_missing_exercise_name_is_reported():
+    # A blank exercise field on a non-header line is an error, not an entry.
+    result = parse_log("2026-01-05,squat,225,5\n2026-01-12, ,230,5")
+
+    assert len(result.entries) == 1
+    assert len(result.errors) == 1
+    assert "missing exercise" in result.errors[0]
+
+
+def test_invalid_weight_is_reported_and_row_skipped():
+    result = parse_log("2026-01-05,squat,heavy,5")
+
+    assert result.entries == []
+    assert "invalid weight" in result.errors[0]
+    assert "heavy" in result.errors[0]
+
+
+def test_invalid_reps_is_reported_and_row_skipped():
+    result = parse_log("2026-01-05,squat,225,lots")
+
+    assert result.entries == []
+    assert "invalid reps" in result.errors[0]
+    assert "lots" in result.errors[0]
+
+
+def test_valid_rows_survive_alongside_malformed_ones():
+    # A paste with typos still yields a usable partial result.
+    result = parse_log(
+        "2026-01-05,squat,225,5\n2026-01-12,squat,bad,5\n2026-01-19,squat,235,5"
+    )
+
+    assert len(result.entries) == 2
+    assert len(result.errors) == 1
+    assert [e.weight for e in result.entries] == [225.0, 235.0]
