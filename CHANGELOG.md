@@ -4,7 +4,9 @@ All notable changes to this project are documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
-## [Unreleased]
+## [1.0.0] - 2026-07-09
+
+First public release.
 
 ### Added
 
@@ -32,3 +34,5 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - Added a regression test covering the exact-zero confidence-interval boundary in
   `classify_exercise`, closing a gap a mutation spot-check found in the stalled/trending
   branch.
+- Covered the parser's malformed-row error branches (missing exercise, non-numeric weight,
+  non-numeric reps, and mixed valid/invalid pastes), bringing the core to 99% line coverage.
