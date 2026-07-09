@@ -23,3 +23,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 - CSS grid tracks and an unwrapped results table caused horizontal overflow at phone widths.
 - Clicking a lift-status badge dropped keyboard focus to `<body>` on rebuild.
+- The raw session table lived inside the chart panel and competed with the canvas for flex
+  space, capping the hero chart around 400px regardless of viewport height; it now has its own
+  panel so the chart reaches the ~60vh `docs/DESIGN.md` calls for.
+
+### Tests
+
+- Added a regression test covering the exact-zero confidence-interval boundary in
+  `classify_exercise`, closing a gap a mutation spot-check found in the stalled/trending
+  branch.
