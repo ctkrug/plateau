@@ -1,0 +1,299 @@
+@import url("https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Inter:wght@400;500;600&display=swap");
+
+:root {
+  --bg: #0b1f33;
+  --surface-1: #0f2942;
+  --surface-2: #15334f;
+  --text: #eaf2fb;
+  --text-muted: #8fa8c2;
+  --accent: #5ee7ff;
+  --accent-support: #ffb347;
+  --success: #6ee7b7;
+  --danger: #ff6b6b;
+  --font-display: "Space Mono", ui-monospace, monospace;
+  --font-body: "Inter", system-ui, sans-serif;
+  --space-1: 8px;
+  --space-2: 16px;
+  --space-3: 24px;
+  --space-4: 32px;
+  --space-6: 48px;
+  --space-8: 64px;
+  --radius: 2px;
+  --edge: 1px solid rgba(94, 231, 255, 0.35);
+  --glow: 0 0 12px rgba(94, 231, 255, 0.25);
+  --motion-ui: 160ms ease-out;
+  --motion-feedback: 90ms ease-out;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  min-height: 100%;
+}
+
+body {
+  background:
+    linear-gradient(rgba(94, 231, 255, 0.05) 1px, transparent 1px) 0 0 / 32px 32px,
+    linear-gradient(90deg, rgba(94, 231, 255, 0.05) 1px, transparent 1px) 0 0 / 32px 32px,
+    var(--bg);
+  color: var(--text);
+  font-family: var(--font-body);
+  line-height: 1.5;
+}
+
+a {
+  color: var(--accent);
+}
+
+::selection {
+  background: rgba(94, 231, 255, 0.3);
+}
+
+.skip-link {
+  position: absolute;
+  left: -999px;
+  top: 0;
+  background: var(--accent);
+  color: var(--bg);
+  padding: var(--space-1) var(--space-2);
+  z-index: 100;
+}
+
+.skip-link:focus {
+  left: var(--space-2);
+}
+
+header.hero {
+  padding: var(--space-6) var(--space-4) var(--space-4);
+  text-align: center;
+}
+
+.wordmark {
+  position: relative;
+  display: inline-block;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: clamp(2.5rem, 6vw, 4.5rem);
+  letter-spacing: 0.08em;
+  margin: 0;
+}
+
+.wordmark svg {
+  display: block;
+  width: 100%;
+  height: 24px;
+  margin-top: -6px;
+  overflow: visible;
+}
+
+.wordmark path {
+  fill: none;
+  stroke: var(--accent);
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-dasharray: 420;
+  stroke-dashoffset: 420;
+  animation: draw-contour 1.2s ease-out forwards;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .wordmark path {
+    animation: none;
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes draw-contour {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+.tagline {
+  color: var(--text-muted);
+  font-size: 1.05rem;
+  max-width: 60ch;
+  margin: var(--space-2) auto 0;
+}
+
+main {
+  display: grid;
+  grid-template-columns: 360px 1fr;
+  gap: var(--space-3);
+  padding: 0 var(--space-4) var(--space-4);
+  align-items: start;
+}
+
+@media (max-width: 900px) {
+  main {
+    grid-template-columns: 1fr;
+  }
+}
+
+.panel {
+  background: var(--surface-1);
+  border: var(--edge);
+  border-radius: var(--radius);
+  padding: var(--space-3);
+}
+
+.panel h2 {
+  font-family: var(--font-display);
+  font-size: 0.95rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--accent);
+  margin: 0 0 var(--space-2);
+}
+
+label {
+  display: block;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  margin-bottom: var(--space-1);
+}
+
+textarea {
+  width: 100%;
+  min-height: 180px;
+  background: var(--surface-2);
+  color: var(--text);
+  border: var(--edge);
+  border-radius: var(--radius);
+  font-family: var(--font-display);
+  font-size: 0.85rem;
+  padding: var(--space-2);
+  resize: vertical;
+  transition: box-shadow var(--motion-ui), border-color var(--motion-ui);
+}
+
+textarea:focus-visible {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: var(--glow);
+}
+
+button {
+  font-family: var(--font-display);
+  font-size: 0.9rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  background: var(--accent);
+  color: var(--bg);
+  border: none;
+  border-radius: var(--radius);
+  padding: var(--space-2) var(--space-3);
+  margin-top: var(--space-2);
+  cursor: pointer;
+  transition: transform var(--motion-feedback), box-shadow var(--motion-ui), opacity var(--motion-ui);
+}
+
+button:hover {
+  box-shadow: var(--glow);
+}
+
+button:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+button:active {
+  transform: translateY(1px) scale(0.99);
+}
+
+button:disabled {
+  opacity: 0.5;
+  cursor: progress;
+}
+
+.status-line {
+  margin-top: var(--space-2);
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  min-height: 1.2em;
+}
+
+.status-line[data-state="error"] {
+  color: var(--danger);
+}
+
+.status-line[data-state="ready"] {
+  color: var(--success);
+}
+
+.chart-panel {
+  min-height: 60vh;
+  display: flex;
+  flex-direction: column;
+}
+
+#chart {
+  flex: 1;
+  width: 100%;
+  min-height: 400px;
+  background:
+    linear-gradient(rgba(94, 231, 255, 0.08) 1px, transparent 1px) 0 0 / 24px 24px,
+    linear-gradient(90deg, rgba(94, 231, 255, 0.08) 1px, transparent 1px) 0 0 / 24px 24px,
+    var(--surface-2);
+  border-radius: var(--radius);
+}
+
+.empty-state {
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  text-align: center;
+  padding: var(--space-6) var(--space-2);
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.85rem;
+  margin-top: var(--space-2);
+}
+
+th,
+td {
+  text-align: left;
+  padding: var(--space-1) var(--space-2);
+  border-bottom: 1px solid rgba(143, 168, 194, 0.2);
+}
+
+th {
+  color: var(--text-muted);
+  font-weight: 600;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.badge {
+  display: inline-block;
+  font-family: var(--font-display);
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  padding: 2px 8px;
+  border-radius: var(--radius);
+  border: 1px solid currentColor;
+}
+
+.badge.stalled {
+  color: var(--accent-support);
+}
+
+.badge.trending {
+  color: var(--success);
+}
+
+footer {
+  text-align: center;
+  color: var(--text-muted);
+  font-size: 0.8rem;
+  padding: var(--space-4);
+}
