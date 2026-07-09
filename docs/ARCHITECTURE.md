@@ -14,7 +14,7 @@ plateau/            core Python package (parsing, statistics)
   analysis.py         estimate_one_rep_max(), fit_trend(), classify_exercise(), classify_log()
 tests/               pytest suite mirroring the package (native Python, runs in CI)
 site/                static site: what actually ships
-  index.html          page markup — input panel, chart panel, results panel
+  index.html          page markup — input panel, chart panel, results (badge) panel, table panel
   css/style.css       blueprint/technical design tokens + component styles (see docs/DESIGN.md)
   js/app.js           all page behavior: talks to Pyodide, renders table/badges/chart
   js/pyodide-loader.js loads Pyodide + copies plateau/ into its virtual filesystem
