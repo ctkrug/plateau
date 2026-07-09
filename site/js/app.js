@@ -23,6 +23,24 @@ const TEXT = "#eaf2fb";
 const TEXT_MUTED = "#8fa8c2";
 const ACCENT_BAND = "rgba(94, 231, 255, 0.14)";
 
+const STORAGE_KEY = "plateau:last-log";
+
+function saveLastLog(text) {
+  try {
+    localStorage.setItem(STORAGE_KEY, text);
+  } catch {
+    // Storage unavailable (private browsing, disabled cookies) — analysis still works, just isn't persisted.
+  }
+}
+
+function loadLastLog() {
+  try {
+    return localStorage.getItem(STORAGE_KEY);
+  } catch {
+    return null;
+  }
+}
+
 const TREND_LABELS = {
   stalled: (c) => `Stalled ${c.weeks_stalled}wk`,
   trending_up: () => "Trending up",
@@ -237,6 +255,7 @@ _classifications = classify_log(_result.entries)
   renderTable(data.rows, data.errors);
   renderBadges(lastClassifications);
   drawChart(lastClassifications.find((c) => c.exercise === activeExercise));
+  saveLastLog(text);
 
   setStatus(`Parsed ${data.rows.length} session(s), ${data.errors.length} error(s).`, "ready");
 }
@@ -264,6 +283,12 @@ async function boot() {
       logInput.value = SAMPLE_LOG;
       analyzeBtn.click();
     });
+
+    const storedLog = loadLastLog();
+    if (storedLog) {
+      logInput.value = storedLog;
+      analyzeBtn.click();
+    }
   } catch (err) {
     setStatus(`Failed to load Python runtime: ${err.message}`, "error");
   }
